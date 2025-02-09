@@ -28,6 +28,7 @@ const createCreditPackage = handleErrorAsync(async (req: Request, res: Response)
 
 const updateCreditPackage = handleErrorAsync(async (req: Request, res: Response) => {
   logger.info(`creditRouter PUT:${req.path}`);
+  console.log(res);
 });
 const deleteCreditPackage = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
