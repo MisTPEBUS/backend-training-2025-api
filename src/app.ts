@@ -1,14 +1,11 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
+
+import Router from './routers/index';
+import logger from './middleware/logger';
 
 const app: Application = express();
-const swaggerOptions = require('./config/swagger');
-const specs = swaggerJsdoc(swaggerOptions);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Express Middlewares
 app.use(helmet());
@@ -17,14 +14,38 @@ app.use(express.urlencoded({ limit: '25mb', extended: true }));
 app.use(express.json());
 
 // Root Route
-
-app.get('/', (req: Request, res: Response) => {
-  res.status(200).json({ message: '<h1>{TS-NODE-EXPRESS}</h1>' });
+app.use('/v1/api', Router);
+app.get('/OPTION', (req: Request, res: Response) => {
+  res.status(200).json();
 });
 
-// Server Health Check
-app.get('/health-check', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Server is up and running!' });
+//Route 404
+app.use((req: Request, res: Response, next: NextFunction) => {
+  logger.error(`404 :${req.path}`);
+  res.status(404).json({
+    status: 'error',
+    message: '查無此路由，請確認 API 格式!',
+  });
+});
+
+// middleware全域錯誤處理
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  err.statusCode = err.statusCode || 500;
+  logger.error(`500 :${req.path}-${err.message}`);
+  if (process.env.NODE_ENV === 'dev') {
+    return res.status(err.statusCode).json({
+      message: err.message,
+      error: err,
+      stack: err.stack,
+    });
+  } else {
+    return res.status(err.statusCode).json({
+      status: false,
+      message: err.isOperational ? err.message : '系統錯誤',
+      data: {},
+      code: err.code || err.statusCode,
+    });
+  }
 });
 
 export default app;
