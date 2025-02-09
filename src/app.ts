@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 
@@ -20,7 +20,7 @@ app.get('/OPTION', (req: Request, res: Response) => {
 });
 
 //Route 404
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response) => {
   logger.error(`404 :${req.path}`);
   res.status(404).json({
     status: 'error',
@@ -29,7 +29,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // middleware全域錯誤處理
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response) => {
   err.statusCode = err.statusCode || 500;
   logger.error(`500 :${req.path}-${err.message}`);
   if (process.env.NODE_ENV === 'dev') {
