@@ -9,7 +9,7 @@ env:
   DB_USERNAME: testHexschool
   DB_PASSWORD: pgStartkit4test
   DB_DATABASE: test
-  PORT: 9924
+  PORT: 3000
 
 jobs:
   checkAPI:
