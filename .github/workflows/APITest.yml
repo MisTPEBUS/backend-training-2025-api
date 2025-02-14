@@ -6,7 +6,8 @@ on:
     branches: [main]
 
 env:
-  DATABASE_URL:postgresql://lobinda:lobinda@localhost:9924/GYMTest?schema=public
+env:
+  DATABASE_URL: "postgresql://lobinda:lobinda@localhost:9924/GYMTest?schema=public"
   DB_USERNAME: lobinda
   DB_PASSWORD: lobinda
   DB_DATABASE: GYMTest
