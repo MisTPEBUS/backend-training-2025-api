@@ -42,11 +42,11 @@ jobs:
         run: npm run dev &
         env:
           DB_HOST: localhost
-          DB_PORT: 5432
+          DB_PORT: 9924
           DB_USERNAME: ${{ env.DB_USERNAME }}
           DB_PASSWORD: ${{ env.DB_PASSWORD }}
           DB_DATABASE: ${{ env.DB_DATABASE }}
-          PORT: 9924
+          PORT: ${{ env.PORT }}
       - name: 等待 API 伺服器準備就緒
         run: |
           echo "等待 API 伺服器啟動..."
