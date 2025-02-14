@@ -11,7 +11,7 @@ datasource db {
 
 model CreditPackage {
   id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(50)
+  name         String    @unique @db.VarChar(50)
   credit_amount Int
   price        Decimal  @db.Decimal(10, 2)
   created_at   DateTime @default(now()) @db.Timestamp(6)
@@ -21,7 +21,7 @@ model CreditPackage {
 
 model Skill {
   id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(50)
+  name         String    @unique @db.VarChar(50)
   created_at   DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
   @@map("skill")
