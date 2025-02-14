@@ -1,5 +1,18 @@
 # NODE.JS + TypeScript 初始化版本
 
+## 技術說明
+
+- **Node.js / Express** - 高效後端框架
+- **TypeScript** - 靜態型別檢查
+- **Prisma** - 資料庫 ORM 工具
+- **PostgreSQL** - 穩定資料庫系統
+- **Passport 與 JWT** - 安全認證機制
+- **Swagger** - 自動生成 API 文件
+- **ESLint 與 Prettier** - 程式碼風格檢查
+- **Husky** - Git hook 工具
+- **Winston** - Log 日誌記錄工具
+- **Jest** - 單元測試框架
+
 ## 啟動方式
 
 安裝相依套件
