@@ -4,22 +4,22 @@ import fs from 'fs';
 
 const { combine, timestamp, printf, errors, label } = format;
 
-// 日誌格式
+// log格式
 const logFormat = printf(({ level, message, timestamp, stack, label }) => {
   return `${timestamp} [${label}] [${level}]: ${stack || message}`;
 });
 
-// 檢查並建立 logs 資料夾
+// 檢查並建立 log 資料夾
 const logsDir = path.join(__dirname, '../logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
 
-// 設定 Logger
+// 設定 log
 const logger = createLogger({
-  level: 'info', // 全局最低日誌級別
+  level: 'info',
   format: combine(
-    label({ label: 'GYMSystem' }), // 加入日誌標籤
+    label({ label: 'GYMSystem' }), // 加入標籤
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     errors({ stack: true }),
     logFormat

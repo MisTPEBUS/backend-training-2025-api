@@ -15,6 +15,9 @@ async function startServer() {
     App.listen(port, () => {
       console.log(`Server is listening on port ${port}`);
     });
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('未捕捉到的 rejection：', promise, '原因：', reason);
+    });
   } catch (error) {
     console.error('資料庫連線失敗:', error);
     process.exit(1);
