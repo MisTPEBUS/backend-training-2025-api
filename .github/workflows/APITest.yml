@@ -6,9 +6,9 @@ on:
     branches: [main]
 
 env:
-  DB_USERNAME: testHexschool
-  DB_PASSWORD: pgStartkit4test
-  DB_DATABASE: test
+  DB_USERNAME: lobinda
+  DB_PASSWORD: lobinda
+  DB_DATABASE: GYMTest
   PORT: 3000
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
           DB_USERNAME: ${{ env.DB_USERNAME }}
           DB_PASSWORD: ${{ env.DB_PASSWORD }}
           DB_DATABASE: ${{ env.DB_DATABASE }}
-          PORT: ${{ env.PORT }}
+          PORT: 9924
       - name: 等待 API 伺服器準備就緒
         run: |
           echo "等待 API 伺服器啟動..."
