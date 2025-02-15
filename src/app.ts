@@ -1,8 +1,6 @@
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application, NextFunction, Request, Response, Router } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-
-import Router from './routers/index';
 
 import { AppError, NotFound } from './utils/appResponse';
 import logger from './utils/logger';
@@ -32,6 +30,7 @@ app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
 
 // Root Route
 app.use('/v1/api', Router);
+
 app.get('/OPTION', (req: Request, res: Response) => {
   res.status(200).json();
 });
@@ -40,9 +39,8 @@ app.get('/OPTION', (req: Request, res: Response) => {
 app.use(NotFound);
 
 // middleware全域錯誤處理
-app.use((err: AppError, req: Request, res: Response) => {
+app.use((err: AppError, req: Request, res: Response, _next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
-
   logger.error(`${err.statusCode} :${req.path}-${err.message}`);
   res.setHeader('Content-Type', 'application/json'); // 確保回傳 JSON
   if (process.env.NODE_ENV === 'dev') {
