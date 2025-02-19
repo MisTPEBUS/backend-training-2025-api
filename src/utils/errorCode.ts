@@ -1,4 +1,4 @@
-export enum ErrorCode {
+export enum responseCode {
   SUCCESS = 200,
   BAD_REQUEST = 400,
   CONFLICT = 409,
@@ -6,14 +6,14 @@ export enum ErrorCode {
 }
 
 export const ErrorMessage = {
-  [ErrorCode.BAD_REQUEST]: '欄位未填寫正確',
-  [ErrorCode.CONFLICT]: '資料重複',
-  [ErrorCode.INTERNAL_SERVER_ERROR]: '伺服器錯誤',
+  [responseCode.BAD_REQUEST]: '欄位未填寫正確',
+  [responseCode.CONFLICT]: '資料重複',
+  [responseCode.INTERNAL_SERVER_ERROR]: '伺服器錯誤',
 };
 
 export const ErrorStatus = {
-  [ErrorCode.SUCCESS]: 'success',
-  [ErrorCode.BAD_REQUEST]: 'failed',
-  [ErrorCode.CONFLICT]: 'failed',
-  [ErrorCode.INTERNAL_SERVER_ERROR]: 'error',
+  [responseCode.SUCCESS]: 'success',
+  [responseCode.BAD_REQUEST]: 'failed',
+  [responseCode.CONFLICT]: 'failed',
+  [responseCode.INTERNAL_SERVER_ERROR]: 'error',
 };
