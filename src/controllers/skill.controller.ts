@@ -1,45 +1,59 @@
 import { NextFunction, Request, Response } from 'express';
+
 import handleErrorAsync from '../middleware/handleErrorAsync';
-
-import logger from '../utils/logger';
-
-import { Success, appError } from '../utils/appResponse';
 import prisma from '../prisma';
+import { SkillRepo } from '../repos/skill.repo';
+import { Success, appError, delSuccess } from '../utils/appResponse';
+import { ErrorMessage, responseCode } from '../utils/errorCode';
 
-const getSkillList = handleErrorAsync(async (req: Request, res: Response) => {
-  //a.檢查req
-  const skillList = await prisma.skill.findMany();
-  logger.info(`skillList GET"${req.path}`);
-  Success(res, skillList);
+const getSkillList = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const skillList = await SkillRepo.getAll();
+    Success(req, res, skillList);
+  } catch (error) {
+    appError(req, ErrorMessage[responseCode.INTERNAL_SERVER_ERROR], next);
+  }
 });
 
-const createSkill = handleErrorAsync(async (req: Request, res: Response) => {
-  const { name } = req.body;
-  logger.info(`skillList POST"${req.path}`);
+const createSkill = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name } = req.body;
+    const existingPackage = await SkillRepo.getByName(name);
+    console.log(existingPackage);
+    if (!existingPackage) {
+      return appError(req, `ID錯誤,請輸入正確的格式`, next, 400);
+    }
+    const newSkill = await prisma.skill.create({
+      data: {
+        name,
+      },
+    });
 
-  const newSkill = await prisma.skill.create({
-    data: {
-      name,
-    },
-  });
-
-  Success(res, newSkill, 201);
+    Success(req, res, newSkill, responseCode.CREATED);
+  } catch (error) {
+    appError(req, ErrorMessage[responseCode.INTERNAL_SERVER_ERROR], next);
+  }
 });
 
 const deleteSkillById = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  logger.info(`Skill DELETE:${req.path}`);
-  const existSkill = await prisma.skill.findUnique({
-    where: { id },
-  });
-  if (!existSkill) {
-    return next(appError(`找不到 ID 為 ${id} 的 Skill資料`, next, 400));
-  }
+  try {
+    const { skillId } = req.params;
 
-  await prisma.skill.delete({
-    where: { id },
-  });
-  Success(res, '', 200);
+    const existingPackage = await SkillRepo.getById(skillId);
+    console.log(existingPackage);
+    if (!existingPackage) {
+      return appError(req, `ID錯誤,請輸入正確的格式`, next, 400);
+    }
+    const existSkill = await SkillRepo.deleteById(skillId);
+
+    if (!existSkill) {
+      return appError(req, `找不到 ID 為 ${skillId} 的 Skill資料`, next, responseCode.CONFLICT);
+    }
+
+    delSuccess(req, res);
+  } catch (error) {
+    appError(req, ErrorMessage[responseCode.INTERNAL_SERVER_ERROR], next);
+  }
 });
 
 const SkillController = {

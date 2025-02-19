@@ -1,68 +1,57 @@
 import { NextFunction, Request, Response } from 'express';
-import handleErrorAsync from '../middleware/handleErrorAsync';
-import { Success, appError, delSuccess } from '../utils/appResponse';
-import logger from '../utils/logger';
-import prisma from '../prisma';
 
-import { ZodError } from 'zod';
-const getAsyncPublicCreditPackage = handleErrorAsync(async (req: Request, res: Response) => {
-  const creditPackages = await prisma.creditPackage.findMany();
-  logger.info(`creditRouter GET: ${req.path}`);
-  Success(res, creditPackages);
+import handleErrorAsync from '../middleware/handleErrorAsync';
+import prisma from '../prisma';
+import { CreditPackageRepo } from '../repos/creditPackage.repo';
+import { Success, appError, delSuccess } from '../utils/appResponse';
+import { ErrorMessage, responseCode } from '../utils/errorCode';
+
+const getAsyncPublicCreditPackages = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const creditPackages = await CreditPackageRepo.getAll();
+
+    Success(req, res, creditPackages);
+  } catch (error) {
+    appError(req, ErrorMessage[responseCode.INTERNAL_SERVER_ERROR], next);
+  }
 });
 
 const createAsyncCreditPackage = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
   // 模擬非同步操作，例如資料庫存取
   try {
     const { name, credit_amount, price } = req.body;
-    const existingPackage = await prisma.creditPackage.findFirst({
-      where: { name },
-    });
-    if (existingPackage) {
-      return appError(`資料重複`, next, 409);
-    }
+    const existingPackage = await CreditPackageRepo.getByName(name);
 
-    logger.info(`creditRouter POST: ${req.path}`);
+    if (existingPackage) {
+      return appError(req, `資料重複。Name 為 ${name} 資料已存在`, next, responseCode.CONFLICT);
+    }
 
     const newCreditPackage = await prisma.creditPackage.create({
       data: { name, credit_amount, price },
     });
 
-    Success(res, newCreditPackage, 201);
+    Success(req, res, newCreditPackage, responseCode.CREATED);
   } catch (error) {
-    if (error instanceof ZodError) {
-      return appError(`欄位未填寫正確`, next);
+    if (error instanceof appError) {
+      return appError(req, `欄位未填寫正確`, next);
     }
     return next(error);
   }
-});
-
-/**
- * 更新 CreditPackage
- */
-const updateAsyncCreditPackage = handleErrorAsync(async (req: Request, res: Response) => {
-  logger.info(`creditRouter PUT: ${req.path}`);
-  // 待補：更新的實際邏輯
-  // const { id } = req.params;
-  // const { name, credit_amount, price } = req.body;
-  // ...
-  await Success(res, { message: 'Update logic not yet implemented.' });
 });
 
 const deleteAsyncCreditPackage = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
   //驗證
 
   const { creditPackageId } = req.params;
-  const existingPackage = await prisma.creditPackage.findUnique({ where: { id: creditPackageId } });
+  const existingPackage = await CreditPackageRepo.getById(creditPackageId);
 
   if (!existingPackage) {
-    return appError(`ID錯誤`, next, 400);
+    return appError(req, `ID錯誤,請輸入正確的格式`, next, 400);
   }
 
-  await prisma.creditPackage.delete({ where: { id: creditPackageId } });
-  logger.info(`creditRouter DELETE: ${req.path}`);
+  await CreditPackageRepo.deleteById(creditPackageId);
 
-  delSuccess(res);
+  delSuccess(req, res);
 });
 
 /**
@@ -77,9 +66,8 @@ const getAdminCreditPackages = (req: Request, res: Response) => {
  * CreditPackage Controller 物件。
  */
 const creditPackageController = {
-  getAsyncPublicCreditPackage,
+  getAsyncPublicCreditPackages,
   createAsyncCreditPackage,
-  updateAsyncCreditPackage,
   deleteAsyncCreditPackage,
   getAdminCreditPackages,
 };

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import creditPackageController from '../../controllers/creditPackage.controller';
 import { validateData } from '../../middleware/validateRequest';
 import creditPackageDto from '../../schema/creditPackage.dto';
@@ -8,7 +9,7 @@ const creditPackageRouter = Router();
  * GET /
  * 取得所有 CreditPackage
  */
-creditPackageRouter.get('/', creditPackageController.getAsyncPublicCreditPackage);
+creditPackageRouter.get('/', creditPackageController.getAsyncPublicCreditPackages);
 /**
  * POST /
  * 新增一筆 CreditPackage 資料。
@@ -24,7 +25,7 @@ creditPackageRouter.post(
  */
 creditPackageRouter.delete(
   '/:creditPackageId',
-  validateData(creditPackageDto.delParams, 'params'),
+  validateData(creditPackageDto.creditPackageParamsID, 'params'),
   creditPackageController.deleteAsyncCreditPackage
 );
 
