@@ -19,9 +19,8 @@ const createSkill = handleErrorAsync(async (req: Request, res: Response, next: N
   try {
     const { name } = req.body;
     const existingPackage = await SkillRepo.getByName(name);
-    console.log(existingPackage);
-    if (!existingPackage) {
-      return appError(req, `ID錯誤,請輸入正確的格式`, next, 400);
+    if (existingPackage) {
+      return appError(req, `資料重複。Name 為 ${name} 資料已存在`, next, responseCode.CONFLICT);
     }
     const newSkill = await prisma.skill.create({
       data: {
@@ -40,7 +39,7 @@ const deleteSkillById = handleErrorAsync(async (req: Request, res: Response, nex
     const { skillId } = req.params;
 
     const existingPackage = await SkillRepo.getById(skillId);
-    console.log(existingPackage);
+
     if (!existingPackage) {
       return appError(req, `ID錯誤,請輸入正確的格式`, next, 400);
     }
