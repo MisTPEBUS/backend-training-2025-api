@@ -19,6 +19,8 @@ model CreditPackage {
   @@map("credit_package")
 }
 
+
+
 model Skill {
   id           String   @id @default(uuid()) @db.Uuid
   name         String    @unique @db.VarChar(50)
