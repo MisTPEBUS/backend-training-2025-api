@@ -16,9 +16,45 @@
 ## 啟動方式
 
 安裝相依套件
+首先，請先安裝專案相依套件：
 
 ```
 npm i
+```
+
+啟動資料庫
+使用 Docker Compose 啟動資料庫容器（根據 .env 檔案設定）：
+
+```
+npm run dbStart
+
+```
+
+執行資料庫 migration
+若有更新 schema 並已產生 migration，將 migration 部署到資料庫：
+
+```
+npm run db:studio
+```
+
+使用 Prisma Studio 來瀏覽資料庫，可以執行：
+
+```
+npm run db:studio
+```
+
+同步 Prisma schema
+將 Prisma schema 推送至資料庫（注意：這個操作會依據你的 schema 進行同步，不會做 migration）：
+
+```
+npm run db:push
+```
+
+啟動開發模式
+使用 nodemon 啟動開發伺服器（監控 src 資料夾內的 .ts 和 .json 檔案變更，自動重啟伺服器）：
+
+```
+npm run dev
 ```
 
 ## 使用套件說明
@@ -119,3 +155,26 @@ JWT_SECRET=hexschool666
 - `npm run db:push` - - `npm run db:migrate` - 將已存在的 migration 部署到目標資料庫。
 - `npm run db:studio` - 打開一個 Web GUI 介面，可以瀏覽和編輯資料庫中的資料。
 - `npm run postinstall` - 生成 Prisma Client。
+
+### 版本更新
+
+#### Week4
+
+1. **新增**
+
+   - **husky**：建立上傳 GitHub 的 pre-commit 與 pre-push 的 ESLint 檢查
+   - **prisma**：建立 ORM Model
+   - **eslint**：建立 ESLint 規則
+   - **jest**：建立 API 測試文件
+   - 新增 **Dockerfile** 與 TypeScript 安裝版本
+
+2. **任務**
+   - **完成 API**
+     - **課程方案**：
+       - `[GET]` 取得購買方案列表：{url}/api/credit-package
+       - `[POST]` 新增購買方案：{url}/api/credit-package
+       - `[DELETE]` 刪除購買方案：{url}/api/credit-package/:creditPackageId
+     - **教練專長**：
+       - `[GET]` 取得教練專長列表：{url}/api/coaches/skill
+       - `[POST]` 新增教練專長：{url}/api/coaches/skill
+       - `[DELETE]` 刪除教練專長：{url}/api/coaches/skill/:skillId
