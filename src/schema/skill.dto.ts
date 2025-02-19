@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const skillSchema = z.object({
-  name: z.string(),
+  name: z.string({ required_error: 'name 為必填' }),
 });
 
 export const skillParamsID = z.object({
