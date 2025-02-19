@@ -1,13 +1,8 @@
 {
-    "ignore": [
-        "node_modules/**",
-        ".git"
-    ],
-    "watch": [
-        "src/**"
-    ],
-    "ext": "ts,json",
-    "inspect": true,
-    "verbose": true,
-    "exec": "ts-node src/server.ts"
+  "ignore": ["node_modules/**", ".git", "src/logs/exceptions.log"],
+  "watch": ["src/**"],
+  "ext": "ts,json",
+  "inspect": true,
+  "verbose": true,
+  "exec": "ts-node src/server.ts"
 }
