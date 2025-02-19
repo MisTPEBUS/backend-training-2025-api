@@ -14,6 +14,7 @@ type ReqPropertyType = 'body' | 'params' | 'query';
 export const validateData = <T>(schema: ZodSchema<T>, property: ReqPropertyType) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      console.log('123', req[property]);
       req[property] = await schema.parseAsync(req[property]);
       next();
     } catch (error) {

@@ -19,6 +19,6 @@ skillRouter.post('/', validateData(skillSchema, 'body'), SkillController.createS
  * DELETE
  * 刪除一筆資料
  */
-skillRouter.delete(':skillId', validateData(skillParamsID, 'params'), SkillController.deleteSkillById);
+skillRouter.delete('/:skillId', validateData(skillParamsID, 'params'), SkillController.deleteSkillById);
 
 export default skillRouter;

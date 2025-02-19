@@ -495,7 +495,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n     \"name\": \"Coding\"\r\n      \r\n}",
+              "raw": "{\r\n     \"name\": \"Codghing\"\r\n      \r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -828,11 +828,11 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:2343/api/credit-package/{{creditPackageId}}",
+              "raw": "http://localhost:2343/api/coaches/skill/172f1e17-22da-4c35-b6d2-4c03836b3345",
               "protocol": "http",
               "host": ["localhost"],
               "port": "2343",
-              "path": ["api", "credit-package", "{{creditPackageId}}"],
+              "path": ["api", "coaches", "skill", "172f1e17-22da-4c35-b6d2-4c03836b3345"],
               "query": [
                 {
                   "key": "creditPackageId",
