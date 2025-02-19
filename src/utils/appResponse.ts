@@ -1,15 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import logger from './logger';
-import { ErrorCode, ErrorStatus } from './errorCode';
 
-export const delSuccess = (res: Response, status = 200): Response => {
+import { responseCode, ErrorStatus } from './errorCode';
+import logger from './logger';
+
+export const delSuccess = (req: Request, res: Response, status = responseCode.SUCCESS): Response => {
+  logger.info(`${req.method} : ${req.statusCode}- "${req.originalUrl}"`);
   return res.status(status).json({
-    status: 'success',
+    status: ErrorStatus[responseCode.SUCCESS],
   });
 };
 /**
  * Sends a successful JSON response.
- *
  * 此函式用來回傳一個成功的 JSON 回應，回應內容包含一個 status 標記和資料內容。
  *
  * @template T - 回應資料的類型。
@@ -18,8 +19,9 @@ export const delSuccess = (res: Response, status = 200): Response => {
  * @param {number} [status=200] - HTTP 狀態碼（預設為 200）。
  * @returns {Response} 回傳包含 JSON 內容的 Express 回應物件。
  */
-export const Success = <T>(res: Response, data: T, status = 200): Response => {
+export const Success = <T>(req: Request, res: Response, data: T, status = responseCode.SUCCESS): Response => {
   console.log(status);
+  logger.info(`${req.method}  : ${req.statusCode}-"${req.originalUrl}"`);
   return res.status(status).json({
     status: 'success',
     data,
@@ -34,14 +36,14 @@ export const Success = <T>(res: Response, data: T, status = 200): Response => {
  * @param {Response} res - Express 回應物件。
  */
 export const NotFound = (req: Request, res: Response) => {
-  logger.error(`404 :${req.path}`);
+  logger.error(`${req.method}  : ${req.statusCode}-${req.originalUrl}`);
   res.status(404).json({
     status: 'error',
     message: '查無此路由，請確認 API 格式!',
   });
 };
 
-export interface AppError extends Error {
+export interface AppErrorType extends Error {
   status?: string;
   statusCode?: number;
   isOperational?: boolean;
@@ -55,11 +57,31 @@ export interface AppError extends Error {
  * @param {NextFunction} next - Express 的 next 函式，用於傳遞錯誤至下一個中介軟體。
  * @param {number} [httpStatus=400] - HTTP 狀態碼（預設為 400）。
  */
-export const appError = (errMessage: string, next: NextFunction, httpStatus = 400) => {
-  const error = new Error(errMessage) as AppError;
+export const appError = (
+  _req: Request,
+  errMessage: string,
+  next: NextFunction,
+  httpStatus = responseCode.BAD_REQUEST
+) => {
+  const error = new Error(errMessage) as AppErrorType;
   error.statusCode = httpStatus;
   error.isOperational = true;
-  error.status = httpStatus == 500 ? ErrorStatus[ErrorCode.INTERNAL_SERVER_ERROR] : ErrorStatus[ErrorCode.BAD_REQUEST];
+  error.status =
+    httpStatus == responseCode.INTERNAL_SERVER_ERROR
+      ? ErrorStatus[responseCode.INTERNAL_SERVER_ERROR]
+      : ErrorStatus[responseCode.BAD_REQUEST];
 
   next(error);
+};
+
+export const resJsonError = (err: AppErrorType, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof SyntaxError && err.statusCode === responseCode.BAD_REQUEST && 'body' in err) {
+    console.error('JSON 解析錯誤:', err);
+    return res.status(400).json({
+      status: 'error',
+      message: '傳入的 JSON 格式錯誤，請檢查逗號或引號是否正確',
+    });
+  }
+  // 如果不是 JSON 解析錯誤，則交由下一個中介軟體處理
+  next();
 };

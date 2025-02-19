@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError, ZodSchema } from 'zod';
+
 import { appError } from '../utils/appResponse';
 
 type ReqPropertyType = 'body' | 'params' | 'query';
@@ -20,9 +21,9 @@ export const validateData = <T>(schema: ZodSchema<T>, property: ReqPropertyType)
         const firstErrorMessage = error.errors[0]?.message || '系統錯誤';
         console.error(firstErrorMessage);
         // 傳遞錯誤訊息給 appError
-        appError(firstErrorMessage, next, 400);
+        appError(req, firstErrorMessage, next, 400);
       } else {
-        appError('validate處理異常', next);
+        appError(req, 'validate處理異常', next);
       }
     }
   };

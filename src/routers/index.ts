@@ -1,12 +1,17 @@
 import { Router } from 'express';
+
 import creditPackageAdminRouter from './admin/creditPackage.routes';
 import creditPackageRouter from './user/creditPackage.routes';
+import skillRouter from './user/skill.routes';
 
-const router = Router();
-// 前台
-router.use('/credit-package', creditPackageRouter);
+const routers = Router();
 
 // 後台
-router.use('/admin/credit-package', creditPackageAdminRouter);
+routers.use('/admin/credit-package', creditPackageAdminRouter);
 
-export default router;
+// 前台
+routers.use('/credit-package', creditPackageRouter);
+
+routers.use('/coaches/skill', skillRouter);
+
+export default routers;

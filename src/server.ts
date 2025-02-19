@@ -1,7 +1,8 @@
 // server.ts
+import dotenv from 'dotenv';
+
 import App from './app';
 import prisma from './prisma';
-import dotenv from 'dotenv';
 
 dotenv.config();
 
