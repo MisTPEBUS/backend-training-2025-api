@@ -34,7 +34,7 @@ npm run dbStart
 若有更新 schema 並已產生 migration，將 migration 部署到資料庫：
 
 ```
-npm run db:studio
+npm run db:migrate
 ```
 
 使用 Prisma Studio 來瀏覽資料庫，可以執行：
