@@ -1,31 +1,131 @@
-// 產生 Prisma Client 的設定
 generator client {
   provider = "prisma-client-js"
 }
 
-// 資料庫連線設定，請依照實際情況修改 provider 及 DATABASE_URL
 datasource db {
   provider = "postgresql" // 或 "mysql"
   url      = env("DATABASE_URL")
 }
 
 model CreditPackage {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String    @unique @db.VarChar(50)
-  credit_amount Int
-  price        Decimal  @db.Decimal(10, 2)
-  created_at   DateTime @default(now()) @db.Timestamp(6)
-  updated_at DateTime @default(now()) @db.Timestamp(6)
+  id              String           @id @default(uuid()) @db.Uuid
+  name            String           @unique @db.VarChar(50)
+  creditAmount    Int
+  price           Decimal          @db.Decimal(10, 2)
+  createdAt       DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime         @default(now()) @db.Timestamp(6)
+  creditPurchases CreditPurchase[]
+
   @@map("credit_package")
 }
 
-
-
 model Skill {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String    @unique @db.VarChar(50)
-  created_at   DateTime @default(now()) @db.Timestamp(6)
-  updated_at DateTime @default(now()) @db.Timestamp(6)
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+
+  coachLinkSkills CoachLinkSkill[]
+  courses         Course[]
+
   @@map("skill")
 }
 
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(50)
+  email     String   @unique @db.VarChar(320)
+  role      String   @db.VarChar(20)
+  password  String   @db.VarChar(72)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+
+  coach           Coach?
+  creditPurchases CreditPurchase[]
+  courseBookings  CourseBooking[]
+  courses         Course[]
+
+  @@map("user")
+}
+
+model Coach {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @default(uuid()) @db.Uuid
+  experienceYears Int
+  description     String   @db.Text
+  profileImageUrl String   @db.VarChar(2048)
+  createdAt       DateTime @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime @default(now()) @db.Timestamp(6)
+
+  user            User             @relation(fields: [userId], references: [id])
+  coachLinkSkills CoachLinkSkill[]
+
+  @@map("coach")
+}
+
+model CoachLinkSkill {
+  id        String   @id @default(uuid()) @db.Uuid
+  coachId   String   @unique @default(uuid()) @db.Uuid
+  skillId   String   @unique @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  courses Course[]
+  coach   Coach    @relation(fields: [coachId], references: [id])
+  skill   Skill    @relation(fields: [skillId], references: [id])
+
+  @@map("coach_link_skill")
+}
+
+model CreditPurchase {
+  id              String @id @default(uuid()) @db.Uuid
+  userId          String @default(uuid()) @db.Uuid
+  creditPackageId String @default(uuid()) @db.Uuid
+
+  user          User          @relation(fields: [userId], references: [id])
+  creditPackage CreditPackage @relation(fields: [creditPackageId], references: [id])
+
+  @@map("credit_purchase")
+}
+
+model CourseBooking {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @default(uuid()) @db.Uuid
+  courseId           String   @default(uuid()) @db.Uuid
+  bookingAt          DateTime @default(now()) @db.Timestamp(6)
+  status             String   @db.VarChar(20)
+  joinAt             DateTime @default(now()) @db.Timestamp(6)
+  leaveAt            DateTime @default(now()) @db.Timestamp(6)
+  cancelledAt        DateTime @default(now()) @db.Timestamp(6)
+  cancellationReason String   @db.VarChar(255)
+  createdAt          DateTime @default(now()) @db.Timestamp(6)
+
+  user   User?   @relation(fields: [userId], references: [id])
+  course Course? @relation(fields: [courseId], references: [id])
+
+  @@map("course_booking")
+}
+
+model Course {
+  id          String @id @default(uuid()) @db.Uuid
+  userId      String @default(uuid()) @db.Uuid
+  skillId     String @default(uuid()) @db.Uuid
+  name        String @db.VarChar(20)
+  description String @db.Text
+
+  startAt         DateTime @default(now()) @db.Timestamp(6)
+  endAt           DateTime @default(now()) @db.Timestamp(6)
+  maxParticipants Int
+  meetingUrl      String   @db.VarChar(2048)
+  createdAt       DateTime @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime @default(now()) @db.Timestamp(6)
+
+  courseBookings CourseBooking[]
+
+  user  User?  @relation(fields: [userId], references: [id])
+  skill Skill? @relation(fields: [skillId], references: [id])
+
+  coachLinkSkill   CoachLinkSkill? @relation(fields: [coachLinkSkillId], references: [id])
+  coachLinkSkillId String?         @db.Uuid
+
+  @@map("course")
+}
