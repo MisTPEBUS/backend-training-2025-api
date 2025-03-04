@@ -4,5 +4,8 @@
     "printWidth": 120,
     "singleQuote": true,
     "trailingComma": "all",
-    "endOfLine": "auto"
+    "endOfLine": "auto",
+    "plugins": [
+        "prettier-plugin-prisma"
+    ]
 }
