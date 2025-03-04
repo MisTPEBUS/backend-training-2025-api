@@ -27,7 +27,7 @@ const createAsyncCreditPackage = handleErrorAsync(async (req: Request, res: Resp
     }
 
     const newCreditPackage = await prisma.creditPackage.create({
-      data: { name, credit_amount, price },
+      data: { name, creditAmount: credit_amount, price },
     });
 
     Success(req, res, newCreditPackage, responseCode.CREATED);
