@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import SkillController from '../../controllers/skill.controller';
 import { validateData } from '../../middleware/validateRequest';
-import { skillParamsID, skillSchema } from '../../schema/skill.dto';
+import { skillParamsID, skillSchema } from '../../validations/skill.dto';
 
 const skillRouter = Router();
 /**

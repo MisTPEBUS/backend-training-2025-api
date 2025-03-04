@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import creditPackageController from '../../controllers/creditPackage.controller';
 import { validateData } from '../../middleware/validateRequest';
-import creditPackageDto from '../../schema/creditPackage.dto';
+import creditPackageDto from '../../validations/creditPackage.dto';
 
 const creditPackageRouter = Router();
 /**
