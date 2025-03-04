@@ -14,17 +14,18 @@ type ReqPropertyType = 'body' | 'params' | 'query';
 export const validateData = <T>(schema: ZodSchema<T>, property: ReqPropertyType) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      console.log('123', req[property]);
       req[property] = await schema.parseAsync(req[property]);
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {
         const firstErrorMessage = error.errors[0]?.message || '系統錯誤';
+
         console.error(firstErrorMessage);
         // 傳遞錯誤訊息給 appError
-        appError(req, firstErrorMessage, next, 400);
+        return appError(req, firstErrorMessage, next, 400);
       } else {
-        appError(req, 'validate處理異常', next);
+        return appError(req, 'validate處理異常', next);
       }
     }
   };
