@@ -1,5 +1,7 @@
 import prisma from '../prisma';
 
+export type Role = 'USER' | 'COACH';
+
 export interface User {
   id: string;
   name: string;
@@ -28,7 +30,7 @@ export const UserRepo = {
     const newUser = await prisma.user.create({
       data: {
         ...user,
-        role: user.role ?? 'user', //預設為 "user"
+        role: user.role ?? 'USER', //預設為 "user"
       },
       select: {
         id: true,
@@ -36,6 +38,12 @@ export const UserRepo = {
       },
     });
     return newUser;
+  },
+  updateRoleByID: async (id: string, role: Role) => {
+    return await prisma.user.update({
+      where: { id },
+      data: { role },
+    });
   },
 
   deleteById: async (id: string): Promise<User> => {
