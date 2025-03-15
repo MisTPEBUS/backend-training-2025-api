@@ -3,12 +3,16 @@ export enum responseCode {
   CREATED = 201,
   NO_CONTENT = 204,
   BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+
+  FORBIDDEN = 403,
   CONFLICT = 409,
   INTERNAL_SERVER_ERROR = 500,
 }
 
 export const ErrorMessage = {
   [responseCode.BAD_REQUEST]: '欄位未填寫正確',
+  [responseCode.UNAUTHORIZED]: '身分驗證授權錯誤',
   [responseCode.CONFLICT]: '資料重複',
   [responseCode.INTERNAL_SERVER_ERROR]: '伺服器錯誤',
 };
