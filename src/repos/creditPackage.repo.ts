@@ -5,8 +5,8 @@ import prisma from '../prisma';
 export interface CreditPackage {
   id: string;
   name: string;
-  credit_amount: number;
   price: Prisma.Decimal;
+  creditAmount: number;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -25,11 +25,11 @@ export const CreditPackageRepo = {
       where: { name },
     });
   },
-  create: async (Skill: Omit<CreditPackage, 'id'>): Promise<CreditPackage> => {
-    const newSkill = await prisma.creditPackage.create({
-      data: Skill,
+  create: async (CreditPackage: Omit<CreditPackage, 'id'>): Promise<CreditPackage> => {
+    const newCreditPackage = await prisma.creditPackage.create({
+      data: CreditPackage,
     });
-    return newSkill;
+    return newCreditPackage;
   },
   deleteById: async (id: string): Promise<CreditPackage> => {
     return await prisma.creditPackage.delete({ where: { id } });
