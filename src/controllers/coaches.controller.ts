@@ -5,6 +5,11 @@ import { CoachCreateInput, CoachRepo } from '../repos/coaches.repo';
 import { Success, appError } from '../utils/appResponse';
 import { responseCode } from '../utils/errorCode';
 
+const getCoaches = handleErrorAsync(async (req: Request, res: Response, _next: NextFunction) => {
+  const creditPackages = await CoachRepo.getAll();
+
+  Success(req, res, creditPackages);
+});
 const createCoach = handleErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { experience_years, description, profile_image_url } = req.body;
 
@@ -38,6 +43,7 @@ const createCoach = handleErrorAsync(async (req: Request, res: Response, next: N
 
 const coachesController = {
   createCoach,
+  getCoaches,
 };
 
 export default coachesController;

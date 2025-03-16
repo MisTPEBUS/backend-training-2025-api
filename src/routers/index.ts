@@ -4,6 +4,7 @@ import { Router } from 'express';
 import courseRouter from './admin/coaches.course.routes';
 import coachesRouter from './admin/coaches.routes';
 import creditPackageAdminRouter from './admin/creditPackage.routes';
+import coachesUserRouter from './user/coaches.routes';
 import creditPackageRouter from './user/creditPackage.routes';
 import skillRouter from './user/skill.routes';
 import userRouter from './user/user.routes';
@@ -12,8 +13,9 @@ const routers = Router();
 
 // 後台
 routers.use('/admin/credit-package', creditPackageAdminRouter);
-routers.use('/admin/coaches', coachesRouter);
+
 routers.use('/admin/coaches/courses', courseRouter);
+routers.use('/admin/coaches', coachesRouter);
 /* routers.use('/admin/coaches/courses',courseController); */
 
 //test Telegram send Msg API
@@ -52,7 +54,7 @@ routers.use('/sendMsg', async () => {
 // 前台
 routers.use('/users', userRouter);
 /* routers.use('/coaches'); */
-
+routers.use('/coaches', coachesUserRouter);
 routers.use('/credit-package', creditPackageRouter);
 routers.use('/coaches/skill', skillRouter);
 

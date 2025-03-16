@@ -1,13 +1,20 @@
 import { Router } from 'express';
 
-import coachesController from '../../controllers/coaches.controller';
-import { CoachCreateValidated } from '../../validations/coach.dto';
+import courseController from '../../controllers/course.controller';
+import { validateData } from '../../middleware/validateRequest';
+import { courseCreateSchema } from '../../validations/course.dto';
 
 const courseRouter = Router();
 /**
  * POST
  * 註冊
  */
-courseRouter.post('/:userId', ...CoachCreateValidated, coachesController.createCoach);
+courseRouter.post('/', validateData(courseCreateSchema, 'body'), courseController.createCourse);
+
+/**
+ * put
+ *
+ */
+courseRouter.put('/coaches/courses', validateData(courseCreateSchema, 'body'), courseController.createCourse);
 
 export default courseRouter;

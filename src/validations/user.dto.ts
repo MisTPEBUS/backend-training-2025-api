@@ -23,3 +23,12 @@ export const userSchema = z.object({
       message: '密碼必須包含大寫字母、小寫字母以及數字',
     }),
 });
+
+export const userUpdateSchema = userSchema.pick({
+  name: true,
+});
+
+export const userLoginSchema = userSchema.pick({
+  email: true,
+  password: true,
+});

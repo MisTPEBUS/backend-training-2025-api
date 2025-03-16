@@ -15,15 +15,34 @@ export const UserRepo = {
   getAll: async (): Promise<User[]> => {
     return await prisma.user.findMany();
   },
+  findOneByLogin: async (email: string, password: string): Promise<Pick<User, 'id' | 'name'> | null> => {
+    return await prisma.user.findFirst({
+      where: {
+        email,
+        password,
+      },
+      select: { id: true, name: true },
+    });
+  },
 
-  getById: async (id: string): Promise<User | null> => {
+  getById: async (id: string): Promise<Pick<User, 'email' | 'name'> | null> => {
     return await prisma.user.findUnique({
       where: { id },
+      select: {
+        email: true,
+        name: true,
+      },
     });
   },
   getByEmail: async (email: string): Promise<User | null> => {
     return await prisma.user.findUnique({
       where: { email },
+    });
+  },
+  updateNameById: async (name: string, id: string): Promise<User | null> => {
+    return await prisma.user.update({
+      where: { id },
+      data: { name },
     });
   },
   create: async (user: Omit<User, 'id'>): Promise<Pick<User, 'id' | 'name'>> => {
